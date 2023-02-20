@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
+using System.Net.NetworkInformation;
 
 namespace КГ_Лабораторная_работа__1
 {
@@ -16,6 +17,7 @@ namespace КГ_Лабораторная_работа__1
     // поэтому создадим абстрактный класс Filters
     abstract class Filters
     {
+        
         // привести значение цвета к допустимому диапазону [0; 255]
         public int Clamp(int value, int min, int max)
         {
@@ -199,6 +201,65 @@ namespace КГ_Лабораторная_работа__1
         }
 
     }
+
+
+    class linearStreching : Filters // линейное растягивание
+    {
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            int XminR = 0;
+            int XmaxR = 255;
+            int XminG = 0;
+            int XmaxG = 255;
+            int XminB = 0;
+            int XmaxB = 255;
+
+            FindMaxMin(sourceImage);
+
+
+            Color sourcecolor = sourceImage.GetPixel(x, y);
+
+            return Color.FromArgb(Fun(sourcecolor.R, XmaxR, XminR), Fun(sourcecolor.G, XmaxG, XminG), Fun(sourcecolor.B, XmaxB, XminB));
+        }
+
+        //функция для рассчета оттенка изображения
+        //в качестве парамтров передаются оттенок пиксела исходного изображения,
+        //максимальное и минимальное значения оттенка
+        private int Fun(int x, int Xmax, int Xmin)
+        {
+            int y = 0;
+            y = (x - Xmin) * (255 / (Xmax - Xmin));
+            return y;
+        }
+        private void FindMaxMin(Bitmap sourceImage) //поиск максимального и минимального оттенка 
+        {
+            int XminR = 0;
+            int XmaxR = 255;
+            int XminG = 0;
+            int XmaxG = 255;
+            int XminB = 0;
+            int XmaxB = 255;
+
+            for (int i = 0; i < sourceImage.Width; i++)
+            {
+                for (int j = 0; j < sourceImage.Height; j++)
+                {
+                    Color pixColor = sourceImage.GetPixel(i, j);
+
+                    if (XminR > pixColor.R) XminR = pixColor.R;
+                    if (XmaxR < pixColor.R) XmaxR = pixColor.R;
+                    if (XminG > pixColor.G) XminG = pixColor.G;
+                    if (XmaxG < pixColor.G) XmaxG = pixColor.G;
+                    if (XminB > pixColor.B) XminB = pixColor.B;
+                    if (XmaxB < pixColor.B) XmaxB = pixColor.B;
+
+                }
+            }
+        }
+    }
+    
+
+
 }
 
 

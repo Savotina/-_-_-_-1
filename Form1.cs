@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -13,11 +14,15 @@ namespace КГ_Лабораторная_работа__1
     public partial class Form1 : Form
     {
         Bitmap image;
+        public int R, G, B;
+        public int XmaxR, XminR, XmaxG, XminG, XmaxB, XminB;
+        Bitmap bmp1, bmp2;
         public Form1()
         {
 
             InitializeComponent();
         }
+
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
@@ -43,6 +48,7 @@ namespace КГ_Лабораторная_работа__1
                 pictureBox1.Image = image;
                 // 2) обновим pictureBox
                 pictureBox1.Refresh();
+                pictureBox2.Image = null;
             }
         }
 
@@ -77,8 +83,8 @@ namespace КГ_Лабораторная_работа__1
         {
             if (!e.Cancelled)
             {
-                pictureBox1.Image = image;
-                pictureBox1.Refresh();
+                pictureBox2.Image = image;
+                pictureBox2.Refresh();
             }
             progressBar1.Value = 0;
         }
@@ -139,6 +145,65 @@ namespace КГ_Лабораторная_работа__1
         {
 
         }
+
+        private void очиститьИзображениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = null;
+            pictureBox2.Image = null;
+        }
+
+        private void сохранитьКакToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Displays a SaveFileDialog so the user can save the Image
+            // assigned to Button2.
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
+            saveFileDialog1.Title = "Save an Image File";
+            saveFileDialog1.ShowDialog();
+
+            // If the file name is not an empty string open it for saving.
+            if (saveFileDialog1.FileName != "")
+            {
+                // Saves the Image via a FileStream created by the OpenFile method.
+                System.IO.FileStream fs =
+                    (System.IO.FileStream)saveFileDialog1.OpenFile();
+                // Saves the Image in the appropriate ImageFormat based upon the
+                // File type selected in the dialog box.
+                // NOTE that the FilterIndex property is one-based.
+                switch (saveFileDialog1.FilterIndex)
+                {
+                    case 1:
+                        this.pictureBox2.Image.Save(fs,
+                          System.Drawing.Imaging.ImageFormat.Jpeg);
+                        break;
+
+                    case 2:
+                        this.pictureBox2.Image.Save(fs,
+                          System.Drawing.Imaging.ImageFormat.Bmp);
+                        break;
+
+                    case 3:
+                        this.pictureBox2.Image.Save(fs,
+                          System.Drawing.Imaging.ImageFormat.Gif);
+                        break;
+                }
+
+                fs.Close();
+            }
+        }
+
+        private void глобальныеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void линейноеРастяжениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new linearStreching();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }      
+
+        
     }
 
     
