@@ -19,6 +19,7 @@ namespace КГ_Лабораторная_работа__1
             InitializeComponent();
         }
 
+
         private void pictureBox1_Click(object sender, EventArgs e)
         {
 
@@ -43,6 +44,7 @@ namespace КГ_Лабораторная_работа__1
                 pictureBox1.Image = image;
                 // 2) обновим pictureBox
                 pictureBox1.Refresh();
+                pictureBox2.Image = null;
             }
         }
 
@@ -77,8 +79,8 @@ namespace КГ_Лабораторная_работа__1
         {
             if (!e.Cancelled)
             {
-                pictureBox1.Image = image;
-                pictureBox1.Refresh();
+                pictureBox2.Image = image;
+                pictureBox2.Refresh();
             }
             progressBar1.Value = 0;
         }
@@ -138,6 +140,12 @@ namespace КГ_Лабораторная_работа__1
         private void progressBar1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void очиститьИзображениеToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            pictureBox1.Image = null;
+            pictureBox2.Image = null;
         }
     }
 
