@@ -7,6 +7,8 @@ using System.Drawing;
 using System.Security.Cryptography.X509Certificates;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.IO;
+using System.Windows.Forms;
 
 namespace КГ_Лабораторная_работа__1
 {
@@ -49,6 +51,7 @@ namespace КГ_Лабораторная_работа__1
         }
     }
 
+
     // наследник класса Filters
     class InvertFilter : Filters
     {
@@ -64,6 +67,138 @@ namespace КГ_Лабораторная_работа__1
         }
     }
 
+
+    // класс, содержащий двумерный массив kernel
+    class MatrixFilter : Filters
+    {
+        protected float[,] kernel = null;
+        protected MatrixFilter() { }
+        public MatrixFilter(float[,] kernel)
+        {
+            this.kernel = kernel;
+        }
+
+        // вычисление цвета пикселя на основании своих соседей
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            int radiusX = kernel.GetLength(0) / 2;
+            int radiusY = kernel.GetLength(1) / 2;
+
+            float resultR = 0;
+            float resultG = 0;
+            float resultB = 0;
+            for (int l = -radiusY; l <= radiusY; l++)
+                for (int k = -radiusX; k <= radiusX; k++)
+                {
+                    int idX = Clamp(x + k, 0, sourceImage.Width - 1);
+                    int idY = Clamp(y + l, 0, sourceImage.Height - 1);
+                    Color neighborColor = sourceImage.GetPixel(idX, idY);
+                    resultR += neighborColor.R * kernel[k + radiusX, l + radiusY];
+                    resultG += neighborColor.G * kernel[k + radiusX, l + radiusY];
+                    resultB += neighborColor.B * kernel[k + radiusX, l + radiusY];
+                }
+
+            return Color.FromArgb(Clamp((int)resultR, 0, 255), Clamp((int)resultG, 0, 255), Clamp((int)resultB, 0, 255));
+        }
+    }
+
+
+    //Создайте матричный фильтр, повышающий резкость изображения.
+    //Матрица для данного фильтра задается следующим образом:
+
+    class SharpnessFilter : MatrixFilter
+    {
+        public SharpnessFilter()
+        {
+            int sizeX = 3;
+            int sizeY = 3;
+            kernel = new float[sizeX, sizeY];
+            kernel[0, 0] = 0;
+            kernel[0, 1] = -1;
+            kernel[0, 2] = 0;
+            kernel[1, 0] = -1;
+            kernel[1, 1] = 5;
+            kernel[1, 2] = -1;
+            kernel[2, 0] = 0;
+            kernel[2, 1] = -1;
+            kernel[2, 2] = 0;
+
+        }
+    }
+
+
+    class GaussianFilter : MatrixFilter
+    {
+        public void createGaussianKernel(int radius, float sigma)
+        {
+            int i, j;
+            int size = 2 * radius + 1;
+            kernel = new float[size, size];
+            float norm = 0;
+
+            for (i = -radius; i <= radius; i++)
+                for (j = -radius; j <= radius; j++)
+                {
+                    kernel[i + radius, j + radius] = (float)(Math.Exp(-(i * i + j * j) / (sigma * sigma)));
+                    norm += kernel[i + radius, j + radius];
+                }
+
+            for (i = 0; i < size; i++)
+                for (j = 0; j < size; j++)
+                    kernel[i, j] /= norm;
+        }
+        public GaussianFilter()
+        {
+            createGaussianKernel(3, 2);
+        }
+    }
+    
+    class BlurFilter : MatrixFilter
+    {
+        public BlurFilter()
+        {
+            int sizeX = 3;
+            int sizeY = 3;
+            kernel = new float[sizeX, sizeY];
+            for (int i = 0; i < sizeX; i++)
+                for (int j = 0; j < sizeY; j++)
+                    kernel[i, j] = 1.0f / (float)(sizeX * sizeY);
+        }
+    }
+ 
+   class GrayScaleFilter : Filters //ЧерноБелое
+    {
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            Color sourceColor = sourceImage.GetPixel(x, y);
+            Color resultColor = Color.FromArgb((int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B), (int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B), (int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B));
+
+            return resultColor;
+        }
+    }
+
+    class Sepia : Filters //СЕПИЯ
+    {
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            Color sourceColor = sourceImage.GetPixel(x, y);
+            int Intensity = (int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B);
+            double k = 30;
+            return Color.FromArgb(Clamp((int)(Intensity + 2 * k), 0, 255), Clamp((int)(Intensity + 0.5 * k), 0, 255), Clamp((int)(Intensity - 1 * k), 0, 255)); //k = ?
+        }
+         
+     }
+
+    class Brithness : Filters //Яркость
+    {
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            Color sourceColor = sourceImage.GetPixel(x, y);
+            int k = 60;
+            return Color.FromArgb(Clamp((int)(k + sourceColor.R), 0, 255), Clamp((int)(k + sourceColor.G), 0, 255), Clamp((int)(k + sourceColor.B), 0, 255));
+        }
+
+    }
 }
 
 
