@@ -199,6 +199,45 @@ namespace КГ_Лабораторная_работа__1
         }
 
     }
+
+    class LinearStreching : Filters // линейное растягивание
+    {
+        int localMax = 0;
+        int localMin = 255;
+        int count = 0;
+
+        void FindMaxMin(Bitmap image)
+        {
+            if (count != 1)
+            {
+                Color PixelColor;
+                for (int i = 0; i < image.Height; i++)
+                {
+                    for (int j = 0; j < image.Width; j++)
+                    {
+                        PixelColor = image.GetPixel(j, i);
+                        if (PixelColor.R > localMax) localMax = PixelColor.R;
+                        if (PixelColor.R < localMin) localMin = PixelColor.R;
+                    }
+
+                }
+                count++;
+            }
+
+        }
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            FindMaxMin(sourceImage);
+            Color sourceColor = sourceImage.GetPixel(x, y);
+            return Color.FromArgb(LinearFormula(sourceColor.R, localMax, localMin), LinearFormula(sourceColor.G, localMax, localMin), LinearFormula(sourceColor.B, localMax, localMin));
+        }
+
+        private int LinearFormula(int x, int Xmax, int Xmin) //Xmax and Xmin - максимальное значение "оттенка" из всего изображения.
+        {
+            return (x - Xmin) * (255 / (Xmax - Xmin));
+        }
+    }
 }
 
 
