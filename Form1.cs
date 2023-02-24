@@ -206,6 +206,12 @@ namespace КГ_Лабораторная_работа__1
             Filters filter = new MedianFilter();
             backgroundWorker1.RunWorkerAsync(filter);
         }
+
+        private void серыйМирToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            Filters filter = new GreyWorld();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
     }
 
     

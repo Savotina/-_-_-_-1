@@ -281,6 +281,52 @@ namespace КГ_Лабораторная_работа__1
             return arr[(int)(count/2)];
         }   
     }
+
+    class GreyWorld : Filters
+    {
+        double r_ = 0;
+        double g_ = 0;
+        double b_ = 0; //Это среднее всех значений одного цвета
+        double Avg;
+        int k = 0;
+        int size;
+        void FindAvarageValues(Bitmap image)
+        {
+            if (k != 1)
+            {
+                Color PixelColor;
+                for (int i = 0; i < image.Height; i++)
+                {
+                    for (int j = 0; j < image.Width; j++)
+                    {
+                        PixelColor = image.GetPixel(j, i);
+                        r_ += PixelColor.R;
+                        g_ += PixelColor.G;
+                        b_ += PixelColor.B;
+                        ;
+                    }
+
+                }
+                k++;
+                size = image.Height * image.Width;
+                r_ /= size;
+                g_ /= size;
+                b_ /= size;
+                Avg = (r_ + g_ + b_) / 3;
+
+            }
+            
+        }
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            FindAvarageValues(sourceImage);
+            Color sourceColor = sourceImage.GetPixel(x, y);
+            int ReturnR = Clamp((int)(sourceColor.R * (Avg / r_)), 0, 255);
+            int ReturnG = Clamp((int)(sourceColor.G * (Avg / g_)), 0, 255);
+            int ReturnB = Clamp((int)(sourceColor.B * (Avg / b_)), 0, 255);
+            return Color.FromArgb(ReturnR,ReturnG,ReturnB);
+        }
+    }
 }
 
 
