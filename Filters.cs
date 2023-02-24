@@ -94,8 +94,7 @@ namespace КГ_Лабораторная_работа__1
                     int idY = Clamp(y + l, 0, sourceImage.Height - 1);
                     Color neighborColor = sourceImage.GetPixel(idX, idY);
                     resultR += neighborColor.R * kernel[k + radiusX, l + radiusY];
-                    resultG += neighborColor.G * kernel[k + radiusX, l + radiusY];
-                    resultB += neighborColor.B * kernel[k + radiusX, l + radiusY];
+
                 }
 
             return Color.FromArgb(Clamp((int)resultR, 0, 255), Clamp((int)resultG, 0, 255), Clamp((int)resultB, 0, 255));
@@ -152,7 +151,7 @@ namespace КГ_Лабораторная_работа__1
             createGaussianKernel(3, 2);
         }
     }
-    
+
     class BlurFilter : MatrixFilter
     {
         public BlurFilter()
@@ -165,8 +164,8 @@ namespace КГ_Лабораторная_работа__1
                     kernel[i, j] = 1.0f / (float)(sizeX * sizeY);
         }
     }
- 
-   class GrayScaleFilter : Filters //ЧерноБелое
+
+    class GrayScaleFilter : Filters //ЧерноБелое
     {
         protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
         {
@@ -186,8 +185,8 @@ namespace КГ_Лабораторная_работа__1
             double k = 30;
             return Color.FromArgb(Clamp((int)(Intensity + 2 * k), 0, 255), Clamp((int)(Intensity + 0.5 * k), 0, 255), Clamp((int)(Intensity - 1 * k), 0, 255)); //k = ?
         }
-         
-     }
+
+    }
 
     class Brithness : Filters //Яркость
     {
@@ -238,7 +237,50 @@ namespace КГ_Лабораторная_работа__1
             return (x - Xmin) * (255 / (Xmax - Xmin));
         }
     }
-}
 
+    class MedianFilter : MatrixFilter
+    {
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            int count = 0;
+            int size = 5;
+            kernel = new float[size, size];
+            int[] arrayR = new int[size * size];
+            int[] arrayG = new int[size * size];
+            int[] arrayB = new int[size * size];
+
+            int radiusX = kernel.GetLength(0) / 2;
+            int radiusY = kernel.GetLength(1) / 2;
+
+            int resultR = 0;
+            int resultG = 0;
+            int resultB = 0;
+
+            for (int l = -radiusY; l <= radiusY; l++)
+                for (int k = -radiusX; k <= radiusX; k++)
+                {
+                    int idX = Clamp(x + k, 0, sourceImage.Width - 1);
+                    int idY = Clamp(y + l, 0, sourceImage.Height - 1);
+                    Color neighborColor = sourceImage.GetPixel(idX, idY);
+
+                    arrayR[count] = neighborColor.R;
+                    arrayG[count] = neighborColor.G;
+                    arrayB[count] = neighborColor.B;
+                    count++;
+                }
+            resultR = FindMedianValue(arrayR, count);
+            resultG = FindMedianValue(arrayG, count);
+            resultB = FindMedianValue(arrayB, count);
+
+            return Color.FromArgb(resultR, resultG, resultB);
+        }
+
+        int FindMedianValue(int[] arr, int count)
+        {  
+            Array.Sort(arr);         
+            return arr[(int)(count/2)];
+        }   
+    }
+}
 
 

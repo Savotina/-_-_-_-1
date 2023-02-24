@@ -195,6 +195,17 @@ namespace КГ_Лабораторная_работа__1
                 }
             
         }
+
+        private void устранениеШумаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void медианныйФильтрToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new MedianFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
     }
 
     
