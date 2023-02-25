@@ -327,6 +327,70 @@ namespace КГ_Лабораторная_работа__1
             return Color.FromArgb(ReturnR,ReturnG,ReturnB);
         }
     }
+
+    class SobelFilter : MatrixFilter
+    {
+        private static double[,] xSobel
+        {
+            get
+            {
+                return new double[,]
+                {
+            { -1, 0, 1 },
+            { -2, 0, 2 },
+            { -1, 0, 1 }
+                };
+            }
+        }
+        private static double[,] ySobel
+        {
+            get
+            {
+                return new double[,]
+                {
+            {  1,  2,  1 },
+            {  0,  0,  0 },
+            { -1, -2, -1 }
+                };
+            }
+        }
+        double XresR, XresG, XresB, YresR, YresG, YresB;
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+
+            int size = 3;
+            kernel = new float [size, size];
+            int radiusX = kernel.GetLength(0) / 2;
+            int radiusY = kernel.GetLength(1) / 2;
+
+            double XresR = 0, XresG = 0, XresB = 0, YresR = 0, YresG = 0, YresB = 0;
+
+            for (int l = -radiusY; l <= radiusY; l++)
+                for (int k = -radiusX; k <= radiusX; k++)
+                {
+                    int idX = Clamp(x + k, 0, sourceImage.Width - 1);
+                    int idY = Clamp(y + l, 0, sourceImage.Height - 1);
+                    Color neighborColor = sourceImage.GetPixel(idX, idY);
+                    XresR += neighborColor.R * xSobel[k + radiusX, l + radiusY]; ;
+                    XresG += neighborColor.G * xSobel[k + radiusX, l + radiusY];
+                    XresB += neighborColor.B * xSobel[k + radiusX, l + radiusY];
+                    YresR += neighborColor.R * ySobel[k + radiusX, l + radiusY];
+                    YresG += neighborColor.G * ySobel[k + radiusX, l + radiusY];
+                    YresB += neighborColor.B * ySobel[k + radiusX, l + radiusY];
+
+                }
+            
+            int resultR, resultG, resultB;
+            resultR = Clamp((int)Math.Sqrt(XresR * XresR + YresR * YresR), 0, 255);
+            resultG = Clamp((int)Math.Sqrt(XresG * XresG + YresG * YresG), 0, 255);
+            resultB = Clamp((int)Math.Sqrt(XresB * XresB + YresB * YresB), 0, 255);
+            return Color.FromArgb(resultR, resultG, resultB);
+        }
+
+        
+    }
 }
+
 
 

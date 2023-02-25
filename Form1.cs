@@ -212,6 +212,12 @@ namespace КГ_Лабораторная_работа__1
             Filters filter = new GreyWorld();
             backgroundWorker1.RunWorkerAsync(filter);
         }
+
+        private void фильтрСобеляToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new SobelFilter();
+            backgroundWorker1.RunWorkerAsync(filter); 
+        }
     }
 
     
