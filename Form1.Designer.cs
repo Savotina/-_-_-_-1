@@ -55,6 +55,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.серыйМирToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.фильтрСобеляToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.фильтрМаксимумаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -206,7 +207,8 @@
             // устранениеШумаToolStripMenuItem
             // 
             this.устранениеШумаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.медианныйФильтрToolStripMenuItem});
+            this.медианныйФильтрToolStripMenuItem,
+            this.фильтрМаксимумаToolStripMenuItem});
             this.устранениеШумаToolStripMenuItem.Name = "устранениеШумаToolStripMenuItem";
             this.устранениеШумаToolStripMenuItem.Size = new System.Drawing.Size(224, 26);
             this.устранениеШумаToolStripMenuItem.Text = "Устранение Шума";
@@ -288,6 +290,13 @@
             this.фильтрСобеляToolStripMenuItem.Text = "Фильтр Собеля";
             this.фильтрСобеляToolStripMenuItem.Click += new System.EventHandler(this.фильтрСобеляToolStripMenuItem_Click);
             // 
+            // фильтрМаксимумаToolStripMenuItem
+            // 
+            this.фильтрМаксимумаToolStripMenuItem.Name = "фильтрМаксимумаToolStripMenuItem";
+            this.фильтрМаксимумаToolStripMenuItem.Size = new System.Drawing.Size(237, 26);
+            this.фильтрМаксимумаToolStripMenuItem.Text = "Фильтр максимума";
+            this.фильтрМаксимумаToolStripMenuItem.Click += new System.EventHandler(this.фильтрМаксимумаToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 17F);
@@ -344,6 +353,7 @@
         private System.Windows.Forms.ToolStripMenuItem медианныйФильтрToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem серыйМирToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem фильтрСобеляToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem фильтрМаксимумаToolStripMenuItem;
     }
 }
 

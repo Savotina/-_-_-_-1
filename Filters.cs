@@ -276,10 +276,10 @@ namespace КГ_Лабораторная_работа__1
         }
 
         int FindMedianValue(int[] arr, int count)
-        {  
-            Array.Sort(arr);         
-            return arr[(int)(count/2)];
-        }   
+        {
+            Array.Sort(arr);
+            return arr[(int)(count / 2)];
+        }
     }
 
     class GreyWorld : Filters
@@ -315,7 +315,7 @@ namespace КГ_Лабораторная_работа__1
                 Avg = (r_ + g_ + b_) / 3;
 
             }
-            
+
         }
         protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
         {
@@ -324,7 +324,7 @@ namespace КГ_Лабораторная_работа__1
             int ReturnR = Clamp((int)(sourceColor.R * (Avg / r_)), 0, 255);
             int ReturnG = Clamp((int)(sourceColor.G * (Avg / g_)), 0, 255);
             int ReturnB = Clamp((int)(sourceColor.B * (Avg / b_)), 0, 255);
-            return Color.FromArgb(ReturnR,ReturnG,ReturnB);
+            return Color.FromArgb(ReturnR, ReturnG, ReturnB);
         }
     }
 
@@ -360,7 +360,7 @@ namespace КГ_Лабораторная_работа__1
         {
 
             int size = 3;
-            kernel = new float [size, size];
+            kernel = new float[size, size];
             int radiusX = kernel.GetLength(0) / 2;
             int radiusY = kernel.GetLength(1) / 2;
 
@@ -380,7 +380,7 @@ namespace КГ_Лабораторная_работа__1
                     YresB += neighborColor.B * ySobel[k + radiusX, l + radiusY];
 
                 }
-            
+
             int resultR, resultG, resultB;
             resultR = Clamp((int)Math.Sqrt(XresR * XresR + YresR * YresR), 0, 255);
             resultG = Clamp((int)Math.Sqrt(XresG * XresG + YresG * YresG), 0, 255);
@@ -388,7 +388,53 @@ namespace КГ_Лабораторная_работа__1
             return Color.FromArgb(resultR, resultG, resultB);
         }
 
-        
+
+    }
+
+    class MaxFilter : MatrixFilter
+    {
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+            int count = 0;
+            int size = 5;
+            kernel = new float[size, size];
+            int[] arrayR = new int[size * size];
+            int[] arrayG = new int[size * size];
+            int[] arrayB = new int[size * size];
+
+            int radiusX = kernel.GetLength(0) / 2;
+            int radiusY = kernel.GetLength(1) / 2;
+
+            int resultR = 0;
+            int resultG = 0;
+            int resultB = 0;
+
+            for (int l = -radiusY; l <= radiusY; l++)
+                for (int k = -radiusX; k <= radiusX; k++)
+                {
+                    int idX = Clamp(x + k, 0, sourceImage.Width - 1);
+                    int idY = Clamp(y + l, 0, sourceImage.Height - 1);
+                    Color neighborColor = sourceImage.GetPixel(idX, idY);
+
+                    arrayR[count] = neighborColor.R;
+                    arrayG[count] = neighborColor.G;
+                    arrayB[count] = neighborColor.B;
+                    count++;
+                }
+            resultR = FindMaxValue(arrayR, count);
+            resultG = FindMaxValue(arrayG, count);
+            resultB = FindMaxValue(arrayB, count);
+
+            return Color.FromArgb(resultR, resultG, resultB);
+        }
+
+        int FindMaxValue(int[] arr, int count)
+        {
+            Array.Sort(arr);
+            return arr[count - 1];
+        }
+
     }
 }
 
