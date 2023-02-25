@@ -376,6 +376,126 @@ namespace КГ_Лабораторная_работа__1
 
     }
 
+    class ShalyaFilter : MatrixFilter
+    {
+        private static double[,] xShalya
+        {
+            get
+            {
+                return new double[,]
+                {
+            { 3, 0, -3 },
+            { 10, 0, -10 },
+            { 3, 0, -3 }
+                };
+            }
+        }
+        private static double[,] yShalya
+        {
+            get
+            {
+                return new double[,]
+                {
+            {  3,  10,  3 },
+            {  0,  0,  0 },
+            { -3, -10, -3 }
+                };
+            }
+        }
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+
+            int size = 3;
+            kernel = new float[size, size]; //Не используется сетка по умолчанию, потому что алгоритм Собеля использует сразу две штуки
+            int radiusX = kernel.GetLength(0) / 2;
+            int radiusY = kernel.GetLength(1) / 2;
+
+            double XresR = 0, XresG = 0, XresB = 0, YresR = 0, YresG = 0, YresB = 0;
+
+            for (int l = -radiusY; l <= radiusY; l++)
+                for (int k = -radiusX; k <= radiusX; k++)
+                {
+                    int idX = Clamp(x + k, 0, sourceImage.Width - 1);
+                    int idY = Clamp(y + l, 0, sourceImage.Height - 1);
+                    Color neighborColor = sourceImage.GetPixel(idX, idY);
+                    XresR += neighborColor.R * xShalya[k + radiusX, l + radiusY];
+                    XresG += neighborColor.G * xShalya[k + radiusX, l + radiusY];
+                    XresB += neighborColor.B * xShalya[k + radiusX, l + radiusY];
+                    YresR += neighborColor.R * yShalya[k + radiusX, l + radiusY];
+                    YresG += neighborColor.G * yShalya[k + radiusX, l + radiusY];
+                    YresB += neighborColor.B * yShalya[k + radiusX, l + radiusY];
+
+                }
+
+            int resultR, resultG, resultB;
+            resultR = Clamp((int)Math.Sqrt(XresR * XresR + YresR * YresR), 0, 255);
+            resultG = Clamp((int)Math.Sqrt(XresG * XresG + YresG * YresG), 0, 255);
+            resultB = Clamp((int)Math.Sqrt(XresB * XresB + YresB * YresB), 0, 255);
+            return Color.FromArgb(resultR, resultG, resultB);
+        }
+    }
+
+    class PryttFilter : MatrixFilter
+    {
+        private static double[,] xPrytt
+        {
+            get
+            {
+                return new double[,]
+                {
+            { -1, 0, 1 },
+            { -1, 0, 1 },
+            { -1, 0, 1 }
+                };
+            }
+        }
+        private static double[,] yPrytt
+        {
+            get
+            {
+                return new double[,]
+                {
+            {  -1,  -1,  -1 },
+            {  0,  0,  0 },
+            {  1,  1,  1 }
+                };
+            }
+        }
+
+        protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
+        {
+
+            int size = 3;
+            kernel = new float[size, size]; //Не используется сетка по умолчанию, потому что алгоритм Собеля использует сразу две штуки
+            int radiusX = kernel.GetLength(0) / 2;
+            int radiusY = kernel.GetLength(1) / 2;
+
+            double XresR = 0, XresG = 0, XresB = 0, YresR = 0, YresG = 0, YresB = 0;
+
+            for (int l = -radiusY; l <= radiusY; l++)
+                for (int k = -radiusX; k <= radiusX; k++)
+                {
+                    int idX = Clamp(x + k, 0, sourceImage.Width - 1);
+                    int idY = Clamp(y + l, 0, sourceImage.Height - 1);
+                    Color neighborColor = sourceImage.GetPixel(idX, idY);
+                    XresR += neighborColor.R * xPrytt[k + radiusX, l + radiusY];
+                    XresG += neighborColor.G * xPrytt[k + radiusX, l + radiusY];
+                    XresB += neighborColor.B * xPrytt[k + radiusX, l + radiusY];
+                    YresR += neighborColor.R * yPrytt[k + radiusX, l + radiusY];
+                    YresG += neighborColor.G * yPrytt[k + radiusX, l + radiusY];
+                    YresB += neighborColor.B * yPrytt[k + radiusX, l + radiusY];
+
+                }
+
+            int resultR, resultG, resultB;
+            resultR = Clamp((int)Math.Sqrt(XresR * XresR + YresR * YresR), 0, 255);
+            resultG = Clamp((int)Math.Sqrt(XresG * XresG + YresG * YresG), 0, 255);
+            resultB = Clamp((int)Math.Sqrt(XresB * XresB + YresB * YresB), 0, 255);
+            return Color.FromArgb(resultR, resultG, resultB);
+        }
+    }
+
     class MaxFilter : MatrixFilter
     {
 

@@ -224,6 +224,28 @@ namespace КГ_Лабораторная_работа__1
             Filters filter = new MaxFilter();
             backgroundWorker1.RunWorkerAsync(filter);
         }
+
+        private void фильтрыToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void фильтрToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void фильтрПрюттаToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new PryttFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
+
+        private void фильтрЩалляToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Filters filter = new ShalyaFilter();
+            backgroundWorker1.RunWorkerAsync(filter);
+        }
     }
 
     
