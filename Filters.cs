@@ -12,8 +12,6 @@ using System.Windows.Forms;
 
 namespace КГ_Лабораторная_работа__1
 {
-    // каждый фильтр представляет отдельный класс, но имеет одинаковую функцию,
-    // поэтому создадим абстрактный класс Filters
     abstract class Filters
     {
         // привести значение цвета к допустимому диапазону [0; 255]
@@ -50,9 +48,6 @@ namespace КГ_Лабораторная_работа__1
             return resultImage;
         }
     }
-
-
-    // наследник класса Filters
     class InvertFilter : Filters
     {
         // переопределение функции класса предка
@@ -67,8 +62,6 @@ namespace КГ_Лабораторная_работа__1
         }
     }
 
-
-    // класс, содержащий двумерный массив kernel
     class MatrixFilter : Filters
     {
         protected float[,] kernel = null;
@@ -101,10 +94,6 @@ namespace КГ_Лабораторная_работа__1
         }
     }
 
-
-    //Создайте матричный фильтр, повышающий резкость изображения.
-    //Матрица для данного фильтра задается следующим образом:
-
     class SharpnessFilter : MatrixFilter
     {
         public SharpnessFilter()
@@ -124,7 +113,6 @@ namespace КГ_Лабораторная_работа__1
 
         }
     }
-
 
     class GaussianFilter : MatrixFilter
     {
@@ -170,9 +158,7 @@ namespace КГ_Лабораторная_работа__1
         protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
         {
             Color sourceColor = sourceImage.GetPixel(x, y);
-            Color resultColor = Color.FromArgb((int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B), (int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B), (int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B));
-
-            return resultColor;
+            return Color.FromArgb((int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B), (int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B), (int)(0.36 * sourceColor.R + 0.53 * sourceColor.G + 0.11 * sourceColor.B));
         }
     }
 
@@ -354,13 +340,12 @@ namespace КГ_Лабораторная_работа__1
                 };
             }
         }
-        double XresR, XresG, XresB, YresR, YresG, YresB;
 
         protected override Color calculateNewPixelColor(Bitmap sourceImage, int x, int y)
         {
 
             int size = 3;
-            kernel = new float[size, size];
+            kernel = new float[size, size]; //Не используется сетка по умолчанию, потому что алгоритм Собеля использует сразу две штуки
             int radiusX = kernel.GetLength(0) / 2;
             int radiusY = kernel.GetLength(1) / 2;
 
@@ -372,7 +357,7 @@ namespace КГ_Лабораторная_работа__1
                     int idX = Clamp(x + k, 0, sourceImage.Width - 1);
                     int idY = Clamp(y + l, 0, sourceImage.Height - 1);
                     Color neighborColor = sourceImage.GetPixel(idX, idY);
-                    XresR += neighborColor.R * xSobel[k + radiusX, l + radiusY]; ;
+                    XresR += neighborColor.R * xSobel[k + radiusX, l + radiusY];
                     XresG += neighborColor.G * xSobel[k + radiusX, l + radiusY];
                     XresB += neighborColor.B * xSobel[k + radiusX, l + radiusY];
                     YresR += neighborColor.R * ySobel[k + radiusX, l + radiusY];
